@@ -9,14 +9,18 @@ public class ChopStick {
         myNumber = ++stickCount;
     }
 
-    synchronized public void take() throws InterruptedException {
-        while (!iAmFree) {
-            wait();
+    synchronized public boolean take() throws InterruptedException {
+        if (!iAmFree) {
+            wait(500);
+            if (!iAmFree) {
+                return false;
+            }
         }
         // assert iAmFree;
         iAmFree = false;
         System.out.println("baguette " + myNumber + " prise");
         // Pas utile de faire notifyAll ici, personne n'attend qu'elle soit occupée
+        return true;
     }
 
     synchronized public void release() {
